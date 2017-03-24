@@ -25,16 +25,16 @@
       tags: italiaapp-backend
 
     - name: "Make sure italiaapp-backend content exist"
-      copy: src=index.html dest=/opt/italiaapp-backend/wwwroot
+      copy: src=app dest=/opt/italiaapp-backend
       tags: italiaapp-backend
 
     - name: "Make sure app server container is restarted"
       docker_container:
         name: italiaapp-backend
-        image: nginx
+        image: readytalk/nodejs-hello
         recreate: true
         volumes:
-          - "/opt/italiaapp-backend/wwwroot:/usr/share/nginx/html:ro"
+          - "/opt/italiaapp-backend/app/server.js:/app/server.js:ro"
       tags: italiaapp-backend
 
     - name: "Make sure shibboleth-nginx log directory exist (supervisor)"
@@ -66,7 +66,7 @@
         env:
           CLIENT_APP_SCHEME: "https"
           CLIENT_APP_HOSTNAME: "spid-test.spc-app1.teamdigitale.it"
-          NGINX_PROXY_DESTINATION: "http://italiaapp-backend:80"
+          NGINX_PROXY_DESTINATION: "http://italiaapp-backend:8080"
       tags: shibboleth-nginx
 
     - name: "Make sure /opt/docker-nginx-letsencrypt exist"
