@@ -1,0 +1,97 @@
+#
+# nginx-letsencrypt -> shibboleth-nginx -> italiaapp-backend
+#
+# TODO Update nginx-letsencrypt to forward https to shibboleth-nginx
+# TOOD make app containers
+# TODO link containers (network)
+---
+- name: Configure server
+  hosts: all
+  become: true
+
+  tasks:
+
+    - name: "Make sure docker is installed"
+      apt: pkg=docker.io state=installed
+
+    - name: "Make sure pip is installed"
+      apt: pkg=python-pip state=installed
+
+    - name: "Make sure docker-py is installed"
+      pip: name=docker-py
+
+    - name: "Make sure italiaapp-backend www root exist"
+      file: path=/opt/italiaapp-backend/wwwroot state=directory
+      tags: italiaapp-backend
+
+    - name: "Make sure italiaapp-backend content exist"
+      copy: src=index.html dest=/opt/italiaapp-backend/wwwroot
+      tags: italiaapp-backend
+
+    - name: "Make sure app server container is restarted"
+      docker_container:
+        name: italiaapp-backend
+        image: nginx
+        recreate: true
+        volumes:
+          - "/opt/italiaapp-backend/wwwroot:/usr/share/nginx/html:ro"
+      tags: italiaapp-backend
+
+    - name: "Make sure shibboleth-nginx log directory exist (supervisor)"
+      file: path=/opt/shibboleth-nginx/log/supervisor state=directory
+      tags: shibboleth-nginx
+
+    - name: "Make sure shibboleth-nginx log directory exist (nginx)"
+      file: path=/opt/shibboleth-nginx/log/nginx state=directory
+      tags: shibboleth-nginx
+
+    - name: "Make sure shibboleth-nginx etc directory exist"
+      file: path=/opt/shibboleth-nginx/etc state=directory
+      tags: shibboleth-nginx
+
+    - name: "Upload shibboleth2.xml"
+      copy: src=shibboleth2.xml dest=/opt/shibboleth-nginx/etc/shibboleth2.xml
+      tags: shibboleth-nginx
+
+    - name: "Make sure shibboleth-nginx container is restarted"
+      docker_container:
+        name: shibboleth-nginx
+        image: virtualstaticvoid/shibboleth-nginx
+        recreate: true
+        links:
+          - "italiaapp-backend:italiaapp-backend"
+        volumes:
+          - "/opt/shibboleth-nginx/log:/var/log"
+          - "/opt/shibboleth-nginx/etc/shibboleth2.xml:/etc/shibboleth/shibboleth2.xml"
+        env:
+          CLIENT_APP_SCHEME: "https"
+          CLIENT_APP_HOSTNAME: "spid-test.spc-app1.teamdigitale.it"
+          NGINX_PROXY_DESTINATION: "http://italiaapp-backend:80"
+      tags: shibboleth-nginx
+
+    - name: "Make sure /opt/docker-nginx-letsencrypt exist"
+      file: path=/opt/docker-nginx-letsencrypt state=directory owner=root
+      tags: nginx-letsencrypt
+
+    - name: "Create docker-nginx-letsencrypt config"
+      copy: src=docker-nginx-letsencrypt.conf dest=/opt/docker-nginx-letsencrypt/nginx/default.conf owner=root
+      tags: nginx-letsencrypt
+
+    - name: "Make sure nginx-letsencrypt container is restarted"
+      docker_container:
+        name: nginx-letsencrypt
+        image: bradjonesllc/docker-nginx-letsencrypt
+        recreate: true
+        published_ports:
+          - "80:80"
+          - "443:443"
+        links:
+          - "shibboleth-nginx:shibboleth-nginx"
+        volumes:
+          - "/opt/docker-nginx-letsencrypt/ssl/dhparam:/etc/ssl/dhparam"
+          - "/opt/docker-nginx-letsencrypt/letsencrypt:/etc/letsencrypt"
+          - "/opt/docker-nginx-letsencrypt/nginx/default.conf:/etc/nginx/conf.d/default.conf"
+        env:
+          CERTS: "spid-test.spc-app1.teamdigitale.it"
+          EMAIL: "federico@teamdigitale.governo.it"
+      tags: nginx-letsencrypt
