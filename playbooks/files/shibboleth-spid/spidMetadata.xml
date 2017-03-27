@@ -1,0 +1,48 @@
+<md:EntityDescriptor xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" entityID="shibbolethsp.ednxs.priv">
+  <md:SPSSODescriptor WantAssertionsSigned="1" AuthnRequestsSigned="1" protocolSupportEnumeration="urn:oasis:names:tc:SAML:2.0:protocol">
+    <md:NameIDFormat>urn:oasis:names:tc:SAML:2.0:nameid-format:transient</md:NameIDFormat>
+    <md:AttributeConsumingService index="0">
+        <md:ServiceName xml:lang="it">Set Attributi 1 - ID Cittadini minimo</md:ServiceName>
+        <md:RequestedAttribute Name="spidCode"/>
+        <md:RequestedAttribute Name="name"/>
+        <md:RequestedAttribute Name="familyName"/>
+        <md:RequestedAttribute Name="fiscalNumber"/>
+    </md:AttributeConsumingService>
+    <md:AttributeConsumingService index="1">
+        <md:ServiceName xml:lang="it">Set Attributi 2 - ID Cittadini completo</md:ServiceName>
+        <md:RequestedAttribute Name="spidCode"/>
+        <md:RequestedAttribute Name="name"/>
+        <md:RequestedAttribute Name="familyName"/>
+        <md:RequestedAttribute Name="placeOfBirth"/>
+        <md:RequestedAttribute Name="countyOfBirth"/>
+        <md:RequestedAttribute Name="dateOfBirth"/>
+        <md:RequestedAttribute Name="gender"/>
+        <md:RequestedAttribute Name="fiscalNumber"/>
+        <md:RequestedAttribute Name="idCard"/>
+        <md:RequestedAttribute Name="mobilePhone"/>
+        <md:RequestedAttribute Name="email"/>
+        <md:RequestedAttribute Name="digitalAddress"/>
+    </md:AttributeConsumingService>
+    <md:AttributeConsumingService index="2">
+        <md:ServiceName xml:lang="it">Set Attributi 3 - ID Cittadini e Persone giuridiche</md:ServiceName>
+        <md:RequestedAttribute Name="spidCode"/>
+        <md:RequestedAttribute Name="name"/>
+        <md:RequestedAttribute Name="familyName"/>
+        <md:RequestedAttribute Name="fiscalNumber"/>
+        <md:RequestedAttribute Name="companyName"/>
+        <md:RequestedAttribute Name="ivaCode"/>
+    </md:AttributeConsumingService>
+    <md:AttributeConsumingService index="3">
+        <md:ServiceName xml:lang="it">Set Attributi 4 - ID Persone giuridiche</md:ServiceName>
+        <md:RequestedAttribute Name="spidCode"/>
+        <md:RequestedAttribute Name="companyName"/>
+        <md:RequestedAttribute Name="registeredOffice"/>
+        <md:RequestedAttribute Name="ivaCode"/>
+    </md:AttributeConsumingService>
+  </md:SPSSODescriptor>
+ <md:Organization>
+        <md:OrganizationName xml:lang="it">AgID - Agenzia per l'Italia Digitale</md:OrganizationName>
+        <md:OrganizationDisplayName xml:lang="it">AgID</md:OrganizationDisplayName>
+        <md:OrganizationURL xml:lang="it">www.agid.gov.it</md:OrganizationURL>
+ </md:Organization>
+</md:EntityDescriptor>

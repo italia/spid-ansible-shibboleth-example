@@ -20,11 +20,11 @@
     -->
     <!-- To customize behavior, map hostnames and path components to applicationId and other settings. -->
     <RequestMapper type="XML">
-        <RequestMap applicationId="client"
+        <RequestMap applicationId="default"
                     authType="shibboleth">
-            <Host name="${CLIENT_APP_HOSTNAME:-your-app.localdomain.com}"
+            <Host name="spid-test.spc-app1.teamdigitale.it"
                   requireSession="true">
-                <Path name="${CLIENT_APP_SECURE_PATH:-/app}" />
+                <Path name="/app" />
             </Host>
         </RequestMap>
     </RequestMapper>

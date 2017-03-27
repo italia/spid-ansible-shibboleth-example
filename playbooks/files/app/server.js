@@ -1,6 +1,12 @@
 var express = require('express');
 var app = express();
 
+app.use(express.static('public'));
+
+app.get('/', function(req, res) {
+  res.send('Nothing to see here');
+});
+
 app.get('/app', function(req, res) {
   res.send('<pre>' + JSON.stringify(req.headers) + '</pre>');
 });
