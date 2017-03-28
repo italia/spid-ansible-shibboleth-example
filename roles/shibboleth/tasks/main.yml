@@ -1,21 +1,19 @@
 ---
-- name: "Make sure shibboleth-nginx log directory exist (supervisor)"
-  file: path=/opt/shibboleth-nginx/log/supervisor state=directory
-
-- name: "Make sure shibboleth-nginx log directory exist (nginx)"
-  file: path=/opt/shibboleth-nginx/log/nginx state=directory
-
-- name: "Make sure shibboleth-nginx etc directory exist"
-  file: path=/opt/shibboleth-nginx/etc state=directory
+- name: Make sure shibboleth-nginx directories exist
+  file: path="{{ shibboleth_dir }}/{{ item }}" state=directory
+  with_items:
+    - log/supervisor
+    - log/nginx
+    - etc
 
 - name: "Upload shibboleth config (extra)"
-  copy: src=shibboleth-spid dest=/opt/shibboleth-nginx/
+  copy: src=shibboleth-spid dest="{{ shibboleth_dir }}"
 
 - name: "Upload shibboleth config (shibboleth2.xml)"
-  template: src=shibboleth2.xml.j2 dest=/opt/shibboleth-nginx/shibboleth2.xml
+  template: src=shibboleth2.xml.j2 dest="{{ shibboleth_dir }}/shibboleth2.xml"
 
 - name: "Upload shibboleth config (nginx)"
-  template: src=shibboleth-nginx-default.conf.j2 dest=/opt/shibboleth-nginx/shibboleth-nginx-default.conf
+  template: src=shibboleth-nginx-default.conf.j2 dest="{{ shibboleth_dir }}/shibboleth-nginx-default.conf"
 
 - name: "Make sure shibboleth-nginx container is restarted"
   docker_container:
@@ -25,14 +23,14 @@
     links:
       - "{{ app_backend_container }}:{{ app_backend_container }}"
     volumes:
-      - "/opt/shibboleth-nginx/log:/var/log"
-      - "/opt/shibboleth-nginx/shibboleth-nginx-default.conf:/etc/nginx/conf.d/default.conf"
-      - "/opt/shibboleth-nginx/shibboleth2.xml:/etc/shibboleth/shibboleth2.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/attribute-map.xml:/etc/shibboleth/attribute-map.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/attribute-policy.xml:/etc/shibboleth/attribute-policy.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/protocols.xml:/etc/shibboleth/protocols.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/security-policy.xml:/etc/shibboleth/security-policy.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/spidMetadata.xml:/etc/shibboleth/spidMetadata.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/spid-idp-metadata:/etc/shibboleth/spid-idp-metadata"
+      - "{{ shibboleth_dir }}/log:/var/log"
+      - "{{ shibboleth_dir }}/shibboleth-nginx-default.conf:/etc/nginx/conf.d/default.conf"
+      - "{{ shibboleth_dir }}/shibboleth2.xml:/etc/shibboleth/shibboleth2.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/attribute-map.xml:/etc/shibboleth/attribute-map.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/attribute-policy.xml:/etc/shibboleth/attribute-policy.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/protocols.xml:/etc/shibboleth/protocols.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/security-policy.xml:/etc/shibboleth/security-policy.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/spidMetadata.xml:/etc/shibboleth/spidMetadata.xml"
+      - "{{ shibboleth_dir }}/shibboleth-spid/spid-idp-metadata:/etc/shibboleth/spid-idp-metadata"
       - "{{ shibboleth_credentials_key }}:/etc/shibboleth/certs/spid-signature.key:ro"
       - "{{ shibboleth_credentials_cert }}:/etc/shibboleth/certs/spid-signature.cer:ro"

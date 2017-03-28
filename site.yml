@@ -12,12 +12,6 @@
     # Riferimento email dell'amministratore
     admin_email: "federico@teamdigitale.governo.it"
 
-    # Path sul server della chiave e del certificato SAML
-    # del service provider (questi path vengono montati
-    # all'interno del container shibboleth-nginx).
-    shibboleth_credentials_key: "/etc/ssl/private/spid-agid-certs/spid-agid-signature.key"
-    shibboleth_credentials_cert: "/etc/ssl/private/spid-agid-certs/spid-agid-signature.cer"
-
     # Backend del layer applicativo.
     # Attualmente corrisponde al container applicativo ma
     # può essere un host esterno raggiungibile dal server di
