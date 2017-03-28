@@ -1,6 +1,6 @@
 ---
-- name: "Make sure /opt/docker-nginx-letsencrypt exist"
-  file: path=/opt/docker-nginx-letsencrypt state=directory owner=root
+- name: "Make sure /opt/docker-nginx-letsencrypt/nginx exist"
+  file: path=/opt/docker-nginx-letsencrypt/nginx state=directory owner=root
 
 - name: "Create docker-nginx-letsencrypt config"
   template: src=docker-nginx-letsencrypt.conf.j2 dest=/opt/docker-nginx-letsencrypt/nginx/default.conf owner=root
