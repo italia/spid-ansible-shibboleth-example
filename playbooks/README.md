@@ -32,6 +32,6 @@ Per la configurazione si faccia riferimento dal playbook `site.yml`.
 $ ansible-playbook -i "$SERVER_HOST," site.yml
 ```
 
-Dove `$SERVER_HOST` è l'host (raggiungibile via SSH) su cui exeguire il processo di configurazione.
+Dove `$SERVER_HOST` è l'host (raggiungibile via SSH) su cui eseguire il processo di configurazione.
 
 __Nota__: attualmente il playbook assume che l'host utilizzi `apt` come sistema di gestione dei pacchetti.
