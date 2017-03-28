@@ -41,7 +41,7 @@ ssl_dhparam /etc/ssl/dhparam/dhparam.pem;
 
 server {
     listen       80;
-    server_name  spid-test.spc-app1.teamdigitale.it;
+    server_name  {{ app_domain }};
 
     location / {
         add_header Strict-Transport-Security "max-age=31536000";
@@ -69,12 +69,10 @@ server {
 
 server {
     listen 443 ssl;
-    server_name  spid-test.spc-app1.teamdigitale.it;
+    server_name {{ app_domain }};
 
     location / {
-        proxy_pass https://shibboleth-nginx:443;
-        # return 200 'gangnam style!';
-        # add_header Content-Type text/plain;
+        proxy_pass https://{{ shibboleth_container }}:443;
     }
 
     #charset koi8-r;

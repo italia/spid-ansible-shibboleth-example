@@ -1,0 +1,13 @@
+---
+
+- name: "La root dell'app-backend deve esistere"
+  copy: src=app dest=/opt/app-backend
+
+- name: "Il container dell'app server deve essere configurato"
+  docker_container:
+    name: app-backend
+    image: readytalk/nodejs-hello
+    recreate: true
+    volumes:
+      - "/opt/app-backend/app/server.js:/app/server.js:ro"
+      - "/opt/app-backend/app/public:/app/public:ro"

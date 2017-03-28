@@ -1,0 +1,9 @@
+---
+- name: "Docker deve essere installato"
+  apt: pkg=docker.io state=installed
+
+- name: "PIP deve essere installato"
+  apt: pkg=python-pip state=installed
+
+- name: "docker-py deve essere installato"
+  pip: name=docker-py

@@ -1,106 +1,26 @@
-#
-# nginx-letsencrypt -> shibboleth-nginx -> italiaapp-backend
-#
-# TODO Update nginx-letsencrypt to forward https to shibboleth-nginx
-# TOOD make app containers
-# TODO link containers (network)
 ---
-- name: Configure server
+- name: Applica configurazione ai server
   hosts: all
   become: true
 
-  tasks:
+  vars:
+    app_domain: "spid-test.spc-app1.teamdigitale.it"
+    admin_email: "federico@teamdigitale.governo.it"
+    app_backend_url: "http://app-backend:8080"
+    app_prefix: "/app"
+    
+  roles:
+    - name: docker
 
-    - name: "Make sure docker is installed"
-      apt: pkg=docker.io state=installed
+    - name: app-backend
+      tags: app-backend
 
-    - name: "Make sure pip is installed"
-      apt: pkg=python-pip state=installed
+    - name: shibboleth
+      tags: shibboleth
+      shibboleth_credentials_key: "/etc/ssl/private/spid-agid-certs/spid-agid-signature.key"
+      shibboleth_credentials_cert: "/etc/ssl/private/spid-agid-certs/spid-agid-signature.cer"
+      app_backend_container: app-backend
 
-    - name: "Make sure docker-py is installed"
-      pip: name=docker-py
-
-    - name: "Make sure italiaapp-backend www root exist"
-      file: path=/opt/italiaapp-backend/wwwroot state=directory
-      tags: italiaapp-backend
-
-    - name: "Make sure italiaapp-backend content exist"
-      copy: src=app dest=/opt/italiaapp-backend
-      tags: italiaapp-backend
-
-    - name: "Make sure app server container is restarted"
-      docker_container:
-        name: italiaapp-backend
-        image: readytalk/nodejs-hello
-        recreate: true
-        volumes:
-          - "/opt/italiaapp-backend/app/server.js:/app/server.js:ro"
-          - "/opt/italiaapp-backend/app/public:/app/public:ro"
-      tags: italiaapp-backend
-
-    - name: "Make sure shibboleth-nginx log directory exist (supervisor)"
-      file: path=/opt/shibboleth-nginx/log/supervisor state=directory
-      tags: shibboleth-nginx
-
-    - name: "Make sure shibboleth-nginx log directory exist (nginx)"
-      file: path=/opt/shibboleth-nginx/log/nginx state=directory
-      tags: shibboleth-nginx
-
-    - name: "Make sure shibboleth-nginx etc directory exist"
-      file: path=/opt/shibboleth-nginx/etc state=directory
-      tags: shibboleth-nginx
-
-    - name: "Upload shibboleth config (shibboleth)"
-      copy: src=shibboleth-spid dest=/opt/shibboleth-nginx/
-      tags: shibboleth-nginx
-
-    - name: "Upload shibboleth config (nginx)"
-      copy: src=shibboleth-nginx-default.conf dest=/opt/shibboleth-nginx/
-      tags: shibboleth-nginx
-
-    - name: "Make sure shibboleth-nginx container is restarted"
-      docker_container:
-        name: shibboleth-nginx
-        image: virtualstaticvoid/shibboleth-nginx
-        recreate: true
-        links:
-          - "italiaapp-backend:italiaapp-backend"
-        volumes:
-          - "/opt/shibboleth-nginx/log:/var/log"
-          - "/opt/shibboleth-nginx/shibboleth-nginx-default.conf:/etc/nginx/conf.d/default.conf"
-          - "/opt/shibboleth-nginx/shibboleth-spid/attribute-map.xml:/etc/shibboleth/attribute-map.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/attribute-policy.xml:/etc/shibboleth/attribute-policy.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/protocols.xml:/etc/shibboleth/protocols.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/security-policy.xml:/etc/shibboleth/security-policy.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/shibboleth2.xml:/etc/shibboleth/shibboleth2.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/spidMetadata.xml:/etc/shibboleth/spidMetadata.xml"
-          - "/opt/shibboleth-nginx/shibboleth-spid/spid-idp-metadata:/etc/shibboleth/spid-idp-metadata"
-          - "/etc/ssl/private/spid-agid-certs:/etc/shibboleth/certs"
-      tags: shibboleth-nginx
-
-    - name: "Make sure /opt/docker-nginx-letsencrypt exist"
-      file: path=/opt/docker-nginx-letsencrypt state=directory owner=root
-      tags: nginx-letsencrypt
-
-    - name: "Create docker-nginx-letsencrypt config"
-      copy: src=docker-nginx-letsencrypt.conf dest=/opt/docker-nginx-letsencrypt/nginx/default.conf owner=root
-      tags: nginx-letsencrypt
-
-    - name: "Make sure nginx-letsencrypt container is restarted"
-      docker_container:
-        name: nginx-letsencrypt
-        image: bradjonesllc/docker-nginx-letsencrypt
-        recreate: true
-        published_ports:
-          - "80:80"
-          - "443:443"
-        links:
-          - "shibboleth-nginx:shibboleth-nginx"
-        volumes:
-          - "/opt/docker-nginx-letsencrypt/ssl/dhparam:/etc/ssl/dhparam"
-          - "/opt/docker-nginx-letsencrypt/letsencrypt:/etc/letsencrypt"
-          - "/opt/docker-nginx-letsencrypt/nginx/default.conf:/etc/nginx/conf.d/default.conf"
-        env:
-          CERTS: "spid-test.spc-app1.teamdigitale.it"
-          EMAIL: "federico@teamdigitale.governo.it"
-      tags: nginx-letsencrypt
+    - name: letsencrypt
+      tags: letsencrypt
+      shibboleth_container: shibboleth-nginx

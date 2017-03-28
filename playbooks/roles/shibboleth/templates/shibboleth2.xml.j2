@@ -2,12 +2,12 @@
 <SPConfig xmlns="urn:mace:shibboleth:2.0:native:sp:config"    xmlns:conf="urn:mace:shibboleth:2.0:native:sp:config"    xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion"    xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"    xmlns:md="urn:oasis:names:tc:SAML:2.0:metadata" clockSkew="180">
   <RequestMapper type="XML">
     <RequestMap applicationId="default" authType="shibboleth">
-      <Host name="spid-test.spc-app1.teamdigitale.it" requireSession="true">
-        <Path name="/app" />
+      <Host name="{{ app_domain }}" requireSession="true">
+        <Path name="{{ app_prefix }}" />
       </Host>
     </RequestMap>
   </RequestMapper>
-  <ApplicationDefaults entityID="https://spid.agid.gov.it" REMOTE_USER="eppn persistent-id targeted-id" signing="true" encryption="false">
+  <ApplicationDefaults entityID="https://{{ app_domain }}" REMOTE_USER="eppn persistent-id targeted-id" signing="true" encryption="false">
     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="true" handlerSSL="true" cookieProps="https" handlerURL="/saml">
       <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="/SAML2/POST" index="0" isDefault="true" />
       <SessionInitiator type="Chaining" Location="/Login" isDefault="true" id="Login" entityID="https://posteid.poste.it">
@@ -27,7 +27,8 @@
       <Handler type="Status" Location="/Status" acl="127.0.0.1 ::1" />
       <Handler type="Session" Location="/Session" showAttributeValues="false"/>
     </Sessions>
-    <Errors supportContact="rosini@agid.gov.it"            helpLocation="/about.html"            styleSheet="/shibboleth-sp/main.css"/>
+    <Errors supportContact="{{ admin_email }}" helpLocation="/about.html" styleSheet="/shibboleth-sp/main.css"/>
+
     <!-- SPID IDP Metadata -->
     <MetadataProvider type="XML" validate="true" file="spid-idp-metadata/spid-idp-arubaid.xml" id="https://loginspid.aruba.it"/>
     <MetadataProvider type="XML" validate="true" file="spid-idp-metadata/spid-idp-infocertid.xml" id="https://identity.infocert.it"/>
@@ -37,7 +38,7 @@
     <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>
     <AttributeResolver type="Query" subjectMatch="true"/>
     <AttributeFilter type="XML" validate="true" path="attribute-policy.xml"/>
-    <CredentialResolver type="File" key="certs/spid-agid-signature.key" certificate="certs/spid-agid-signature.cer" use="signing"/>
+    <CredentialResolver type="File" key="certs/spid-signature.key" certificate="certs/spid-signature.cer" use="signing"/>
   </ApplicationDefaults>
   <SecurityPolicyProvider type="XML" validate="true" path="security-policy.xml"/>
   <ProtocolProvider type="XML" validate="true" reloadChanges="false" path="protocols.xml"/>
