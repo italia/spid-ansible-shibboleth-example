@@ -1,0 +1,9 @@
+---
+# Path sul server della chiave e del certificato SAML
+# del service provider (questi path vengono montati
+# all'interno del container shibboleth-nginx).
+shibboleth_credentials_key: /etc/ssl/private/spid-agid-certs/spid-agid-signature.key
+shibboleth_credentials_cert: /etc/ssl/private/spid-agid-certs/spid-agid-signature.cer
+
+# Path sul server alla cartella di installazione di shibboleth
+shibboleth_dir: /opt/shibboleth-nginx/
