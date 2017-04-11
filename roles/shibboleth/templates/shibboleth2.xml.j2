@@ -7,15 +7,26 @@
       </Host>
     </RequestMap>
   </RequestMapper>
-  <ApplicationDefaults entityID="https://{{ app_domain }}" REMOTE_USER="eppn persistent-id targeted-id" signing="true" encryption="false">
+  <ApplicationDefaults
+    entityID="https://{{ shibboleth_entityid }}"
+    REMOTE_USER="eppn persistent-id targeted-id"
+    signing="true"
+    encryption="false"
+    >
     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="true" handlerSSL="true" cookieProps="https" handlerURL="/saml">
       <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="/SAML2/POST" index="0" isDefault="true" />
-      <SessionInitiator type="Chaining" Location="/Login" isDefault="true" id="Login" entityID="https://posteid.poste.it">
-
-          <SessionInitiator type="SAML2" template="bindingTemplate.html"/>
-          <SessionInitiator type="Shib1"/>
-
+      <SessionInitiator type="SAML2" Location="/Login" isDefault="true"
+             outgoingBinding="urn:oasis:names:tc:SAML:profiles:SSO:request-init" isPassive="false" signing="true" entityID="https://posteid.poste.it"
+             authnContextClassRef="https://www.spid.gov.it/SpidL1"
+             authnContextComparison="minimum"
+             NameIDFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
+             >
+         <samlp:AuthnRequest xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol"
+             xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="spid.agid.gov.it" Version="2.0" IssueInstant="2017-01-01T00:00:00Z" AttributeConsumingServiceIndex="0">
+             <saml:Issuer Format="urn:oasis:names:tc:SAML:2.0:nameid-format:entity" NameQualifier="spid.agid.gov.it">https://spid.agid.gov.it</saml:Issuer>
+         </samlp:AuthnRequest>
       </SessionInitiator>
+
       <LogoutInitiator type="Chaining" Location="/Logout">
         <LogoutInitiator type="SAML2"                                 outgoingBindings="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" signing="true"/>
         <LogoutInitiator type="Local" signing="true"/>

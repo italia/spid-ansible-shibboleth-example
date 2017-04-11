@@ -32,7 +32,7 @@
       - "/opt/shibboleth-nginx/shibboleth-spid/attribute-policy.xml:/etc/shibboleth/attribute-policy.xml"
       - "/opt/shibboleth-nginx/shibboleth-spid/protocols.xml:/etc/shibboleth/protocols.xml"
       - "/opt/shibboleth-nginx/shibboleth-spid/security-policy.xml:/etc/shibboleth/security-policy.xml"
-      - "/opt/shibboleth-nginx/shibboleth-spid/spidMetadata.xml:/etc/shibboleth/spidMetadata.xml"
+      - "/opt/shibboleth-nginx/agid-spid-metadata-signed.xml:/etc/shibboleth/spidMetadata.xml"
       - "/opt/shibboleth-nginx/shibboleth-spid/spid-idp-metadata:/etc/shibboleth/spid-idp-metadata"
       - "{{ shibboleth_credentials_key }}:/etc/shibboleth/certs/spid-signature.key:ro"
       - "{{ shibboleth_credentials_cert }}:/etc/shibboleth/certs/spid-signature.cer:ro"

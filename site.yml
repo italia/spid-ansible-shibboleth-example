@@ -9,6 +9,11 @@
     # gira il container di frontend (nginx-letsencrypt).
     app_domain: "spid-test.spc-app1.teamdigitale.it"
 
+    # L'entity ID ha come valore di default quello di
+    # app_domain qui sopra definito, in caso sia necessario
+    # può esserne fatto l'override tramite la seguente variabile:
+    shibboleth_entityid: "spid.agid.gov.it"
+
     # Riferimento email dell'amministratore
     admin_email: "federico@teamdigitale.governo.it"
 

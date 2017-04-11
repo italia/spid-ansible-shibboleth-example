@@ -1,3 +1,7 @@
+#
+# Per la configurazione NGINX-Shibboleth, fare riferimento a:
+# https://github.com/nginx-shib/nginx-http-shibboleth
+#
 server {
 
   listen 80;
@@ -46,12 +50,15 @@ server {
     proxy_set_header        X-Forwarded-For $proxy_add_x_forwarded_for;
 
     location {{ app_prefix }} {
-      # Clear headers coming from external request
-      more_clear_input_headers 'Variable-*' 'Shib-*' 'Remote-User' 'REMOTE_USER' 'Auth-Type' 'AUTH_TYPE';
+      # Clear headers coming from external request (case insensitive)
+      more_clear_input_headers 'Remote-User' 'REMOTE_USER' 'Auth-Type' 'AUTH_TYPE';
+      more_clear_input_headers 'shib-application-id' 'shib-authentication-instant' 'shib-authentication-method' 'shib-authncontext-class' 'shib-identity-provider' 'shib-session-id' 'shib-session-index';
 
       # Add your attributes here. They get introduced as headers
       # by the FastCGI authorizer so we must prevent spoofing.
-      more_clear_input_headers 'displayName' 'mail' 'persistent-id';
+      more_clear_input_headers 'spid-attribute-spidCode' 'spid-attribute-name' 'spid-attribute-familyName' 'spid-attribute-placeOfBirth' 'spid-attribute-countyOfBirth' 'spid-attribute-dateOfBirth' 'spid-attribute-gender' 'spid-attribute-companyName' 'spid-attribute-registeredOffice' 'spid-attribute-fiscalNumber' 'spid-attribute-ivaCode' 'spid-attribute-idCard' 'spid-attribute-mobilePhone' 'spid-attribute-email' 'spid-attribute-address' 'spid-attribute-expirationDate' 'spid-attribute-digitalAddress';
+
+      # Reference to FastCGI authorizer defined above
       shib_request /shibauthorizer;
 
       proxy_pass {{ app_backend_url }};
