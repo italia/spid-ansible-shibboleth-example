@@ -8,7 +8,7 @@ Questo playbook Ansible implementa un esempio di applicazione nodejs che serve i
 
 L'architettura è basata su container Docker ed implementa tre layer applicativi:
 
-* Layer HTTPS basato du NGINX e Letsencrypt
+* Layer HTTPS basato su NGINX e Letsencrypt
 * Layer autenticazione SPID basato su NGINX (Openresty) e Shibboleth
 * Layer applicativo (in questo esempio Nodejs ed Express)
 
