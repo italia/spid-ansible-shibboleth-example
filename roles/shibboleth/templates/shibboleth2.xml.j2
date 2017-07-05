@@ -15,8 +15,8 @@
     >
     <Sessions lifetime="28800" timeout="3600" relayState="ss:mem" checkAddress="true" handlerSSL="true" cookieProps="https" handlerURL="/saml">
       <md:AssertionConsumerService Binding="urn:oasis:names:tc:SAML:2.0:bindings:HTTP-POST" Location="/SAML2/POST" index="0" isDefault="true" />
-      <SessionInitiator type="SAML2" Location="/Login" isDefault="true"
-             outgoingBinding="urn:oasis:names:tc:SAML:profiles:SSO:request-init" isPassive="false" signing="true" entityID="https://posteid.poste.it"
+      <SessionInitiator type="SAML2" Location="/Login" isDefault="true" forceAuthn="true"
+             outgoingBinding="urn:oasis:names:tc:SAML:profiles:SSO:request-init" isPassive="false" signing="true"
              authnContextClassRef="https://www.spid.gov.it/SpidL1"
              authnContextComparison="minimum"
              NameIDFormat="urn:oasis:names:tc:SAML:2.0:nameid-format:transient"
