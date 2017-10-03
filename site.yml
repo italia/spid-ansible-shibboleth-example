@@ -6,11 +6,11 @@
   vars:
     # Dominio pubblico su cui l'applicazione è pubblicata
     # Questo dominio deve risolvere all'host su cui viene
-    # gira il container di frontend (nginx-letsencrypt).
+    # eseguito il container di frontend (nginx-letsencrypt).
     app_domain: "spid-test.spc-app1.teamdigitale.it"
 
     # L'entity ID ha come valore di default quello di
-    # app_domain qui sopra definito, in caso sia necessario
+    # app_domain qui sopra definito. In caso sia necessario
     # può esserne fatto l'override tramite la seguente variabile:
     shibboleth_entityid: "spid.agid.gov.it"
 
@@ -24,7 +24,7 @@
     shibboleth_credentials_cert: "/etc/ssl/private/spid-agid-certs/spid-agid-signature.cer"
 
     # Backend del layer applicativo.
-    # Attualmente corrisponde al container applicativo ma
+    # Attualmente corrisponde al container applicativo, ma
     # può essere un host esterno raggiungibile dal server di
     # frontend.
     app_backend_url: "http://app-backend:8080"
