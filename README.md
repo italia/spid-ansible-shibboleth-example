@@ -18,7 +18,7 @@ Il layer applicativo, essendo un backend del layer di autenticazione, può esser
 
 Il layer di autenticazione passa le informazioni di autenticazione al layer applicativo attraverso un set di header HTTP, presenti nel caso la sessione sia stata autenticata.
 
-La gestione delle sessioni di autenticazione é delegata a Shibboleth e nell'esempio attuale é basata sullo [StorageService di default](https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPStorageService) che mantiene la cache delle sessioni in memoria. Questo comporta la perdita delle sessioni di autenticazione in caso di riavvio del container Shibboleth.
+La gestione delle sessioni di autenticazione è delegata a Shibboleth e nell'esempio attuale é basata sullo [StorageService di default](https://wiki.shibboleth.net/confluence/display/SHIB2/NativeSPStorageService) che mantiene la cache delle sessioni in memoria. Questo comporta la perdita delle sessioni di autenticazione in caso di riavvio del container Shibboleth.
 
 Modificando la configurazione di default è possibile implementare uno storage persistente tramite database ODBC o Memcache.
 
